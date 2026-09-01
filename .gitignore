@@ -34,3 +34,5 @@ logs/
 *.log
 npm-debug.log*
 ai-model/venv/
+backend/node_modules/
+node_modules/
