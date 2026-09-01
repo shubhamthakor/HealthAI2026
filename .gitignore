@@ -1,0 +1,36 @@
+# Dependencies
+node_modules/
+backend/node_modules/
+frontend/node_modules/
+ai-model/venv/
+
+# Local Environment Secrets
+.env
+.env.local
+backend/.env
+frontend/.env
+
+# Build outputs
+dist/
+frontend/dist/
+
+# Python caches and trained models
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+ai-model/trained_models/*.joblib
+ai-model/trained_models/symptoms_vocabulary.json
+
+# IDEs and OS files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+ai-model/venv/
