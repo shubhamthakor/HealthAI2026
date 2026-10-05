@@ -32,12 +32,14 @@ const Landing = () => {
       y: -100
     });
 
+    const isMobile = window.innerWidth <= 768;
+
     gsap.fromTo(
       ".cinematic-content",
       {
-        opacity: 0,
-        y: 120,
-        scale: 0.92
+        opacity: isMobile ? 0.4 : 0,
+        y: isMobile ? 25 : 120,
+        scale: isMobile ? 0.96 : 0.92
       },
       {
         opacity: 1,
@@ -46,26 +48,12 @@ const Landing = () => {
         ease: "power3.out",
         scrollTrigger: {
           trigger: ".cinematic-section",
-          start: "top 75%",
-          end: "center center",
-          scrub: 1.2,
+          start: isMobile ? "top 90%" : "top 75%",
+          end: isMobile ? "top 25%" : "center center",
+          scrub: isMobile ? 0.6 : 1.2,
         }
       }
     );
-
-    /* FADE OUT WHILE SCROLLING */
-    gsap.to(".cinematic-content", {
-      opacity: 0.2,
-      y: -120,
-      scale: 0.95,
-      ease: "none",
-      scrollTrigger: {
-        trigger: ".cinematic-section",
-        start: "center center",
-        end: "bottom top",
-        scrub: 1.2,
-      }
-    });
 
     ScrollTrigger.refresh();
 
@@ -76,6 +64,13 @@ const Landing = () => {
   }, []);
 
   const text = "Welcome to HealthAI";
+
+  const scrollToCinematic = () => {
+    const elem = document.getElementById("cinematic-section");
+    if (elem) {
+      elem.scrollIntoView({ behavior: "smooth" });
+    }
+  };
 
   return (
     <div className="landing-page-root">
@@ -102,30 +97,36 @@ const Landing = () => {
           ))}
         </div>
 
-        <p className="scroll-text">
-          Scroll to begin
+        <p className="scroll-text" onClick={scrollToCinematic} style={{ cursor: 'pointer' }}>
+          Scroll to begin ↓
         </p>
       </div>
 
-      <div className="cinematic-section">
+      <div className="cinematic-section" id="cinematic-section">
         <div className="cinematic-content">
-          <div className="left-side">
+          <div className="section-heading">
             <h2>
               Intelligent Care Begins With Understanding
             </h2>
-            <p>
-              Describe your symptoms naturally and let HealthAI deliver intelligent health insights, personalized condition analysis, and seamless doctor appointment recommendations — all in one experience.
-            </p>
-            <button className="enter-btn" onClick={() => navigate("/login")}>
-              Begin Health Analysis
-            </button>
           </div>
 
-          <div className="right-side">
+          <div className="section-image">
             <img
               src="/images/doctor.png"
               alt="doctor"
             />
+          </div>
+
+          <div className="section-description">
+            <p>
+              Describe your symptoms naturally and let HealthAI deliver intelligent health insights, personalized condition analysis, and seamless doctor appointment recommendations — all in one experience.
+            </p>
+          </div>
+
+          <div className="action-side">
+            <button className="enter-btn" onClick={() => navigate("/login")}>
+              Begin Health Analysis
+            </button>
           </div>
         </div>
       </div>

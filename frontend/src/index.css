@@ -2589,10 +2589,41 @@ html, body {
     font-size: 1.5rem;
   }
 
-  .auth-card-subtitle {
-    font-size: 0.88rem;
-    margin-bottom: 24px;
+/* Extra Mobile Screen Refinements (<480px) */
+@media (max-width: 480px) {
+  .modal-backdrop {
+    padding: 10px;
+    align-items: center;
+  }
+
+  .modal-card {
+    padding: 18px 14px;
+    max-height: 90vh;
+    border-radius: var(--radius-md);
+  }
+
+  .tab-toggle-container {
+    width: 100%;
+    display: flex;
+    overflow-x: auto;
+    flex-direction: row;
+    gap: 4px;
+    padding: 4px;
+  }
+
+  .tab-toggle-btn {
+    flex: 1;
+    white-space: nowrap;
+    padding: 8px 12px;
+    font-size: 0.82rem;
+    text-align: center;
+  }
+
+  .table-card-container {
+    padding: 12px 8px;
+    border-radius: var(--radius-sm);
   }
 }
+
 
 
