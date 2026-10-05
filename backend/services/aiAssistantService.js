@@ -1,5 +1,6 @@
 const intentService = require('./intentService');
 const symptomExtractionService = require('./symptomExtractionService');
+const nlpService = require('./nlpService');
 const actionService = require('./actionService');
 const responseFormatter = require('./responseFormatter');
 const aiService = require('./aiService');
@@ -35,6 +36,14 @@ const processChatMessage = async (patientId, userMessage, lang = 'en', chatHisto
         // Fallback to entities symptoms if NLP returns empty
         if ((!symptoms || symptoms.length === 0) && entities.symptoms && entities.symptoms.length > 0) {
           symptoms = entities.symptoms;
+        }
+
+        // Normalize raw symptoms & aliases against dataset vocabulary
+        try {
+          const vocabulary = nlpService.getVocabulary();
+          symptoms = nlpService.normalizeSymptomTokens(symptoms, vocabulary);
+        } catch (vocabErr) {
+          console.error('Failed to load vocabulary for normalization:', vocabErr.message);
         }
 
         if (!symptoms || symptoms.length === 0) {
@@ -106,8 +115,9 @@ const processChatMessage = async (patientId, userMessage, lang = 'en', chatHisto
             actionExecuted = 'book_appointment';
             const selectedDoctor = doctors[0];
             
-            // Resolve booking date (default to tomorrow 2026-07-06 if not resolved)
-            const bookingDateStr = entities.date || '2026-07-06';
+            // Resolve booking date (default to today's date if not specified)
+            const todayISO = new Date().toISOString().split('T')[0];
+            const bookingDateStr = entities.date || todayISO;
             
             // Resolve disease classification (default to "General Consultation" if none)
             const diseaseKey = entities.specialization || 'General Consultation';
@@ -137,6 +147,15 @@ const processChatMessage = async (patientId, userMessage, lang = 'en', chatHisto
         break;
       }
 
+      case 'appointment_check': {
+        actionExecuted = 'appointment_check';
+        const Appointment = require('../models/Appointment');
+        const appointments = await Appointment.find({ patientId }).populate('doctorId').sort({ appointmentDate: -1 });
+        actionData = { appointments };
+        actionSuccess = true;
+        break;
+      }
+
       case 'queue_tracking': {
         actionExecuted = 'queue_tracking';
         const queueStatus = await actionService.fetchQueueStatus(patientId);
@@ -153,7 +172,8 @@ const processChatMessage = async (patientId, userMessage, lang = 'en', chatHisto
 
       case 'leave_inquiry': {
         actionExecuted = 'leave_inquiry';
-        const checkDate = entities.date || '2026-07-06'; // default check date
+        const todayISO = new Date().toISOString().split('T')[0];
+        const checkDate = entities.date || todayISO; // default check date
         
         let doctorsToCheck = [];
         if (entities.doctorName) {

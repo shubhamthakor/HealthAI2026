@@ -13,7 +13,7 @@ const errorMiddleware = (err, req, res, next) => {
   err.statusCode = err.statusCode || 500;
   err.code = err.code || 'INTERNAL_SERVER_ERROR';
 
-  if (process.env.NODE_ENV === 'development') {
+  if (process.env.NODE_ENV === 'development' && err.statusCode >= 500) {
     console.error(err);
   }
 

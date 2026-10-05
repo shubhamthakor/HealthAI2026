@@ -124,7 +124,7 @@ const AIChatWidget = () => {
     if (!doctors || doctors.length === 0) return null;
     return (
       <div className="ai-chat-card-container">
-        {doctors.slice(0, 3).map((doc) => (
+        {doctors.map((doc) => (
           <div key={doc._id} className="ai-chat-doctor-card">
             <div className="ai-chat-doctor-info">
               <h4>Dr. {doc.name}</h4>

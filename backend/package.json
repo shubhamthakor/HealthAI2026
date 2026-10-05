@@ -22,7 +22,8 @@
     "express-validator": "^7.3.2",
     "helmet": "^8.2.0",
     "jsonwebtoken": "^9.0.3",
-    "mongoose": "^9.7.0",
+    "mongodb": "^7.6.0",
+    "mongoose": "^9.9.4",
     "resend": "^6.12.4",
     "socket.io": "^4.8.3"
   },

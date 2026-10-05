@@ -89,7 +89,7 @@ Example Output:
     const response = await axios.post(
       'https://api.groq.com/openai/v1/chat/completions',
       {
-        model: 'llama-3.1-8b-instant',
+        model: 'qwen/qwen3.8-27b',
         messages: [
           {
             role: 'system',
@@ -163,6 +163,58 @@ Example Output:
   }
 };
 
+const SYMPTOM_ALIASES = {
+  'weakness': 'fatigue',
+  'feeling_weak': 'fatigue',
+  'feel_weak': 'fatigue',
+  'body_gets_hot': 'high_fever',
+  'body_hot': 'high_fever',
+  'hot_body': 'high_fever',
+  'fever': 'high_fever',
+  'headache': 'headache',
+  'head_pain': 'headache',
+  'vomiting': 'vomiting',
+  'stomach_pain': 'stomach_pain',
+  'body_pain': 'muscle_pain',
+  'joint_pain': 'joint_pain'
+};
+
+/**
+ * Normalizes raw symptom tokens against dataset vocabulary and symptom aliases.
+ * 
+ * @param {string[]} rawSymptoms - List of raw symptom strings
+ * @param {string[]} vocabulary - List of dataset vocabulary tokens
+ * @returns {string[]} Normalized valid dataset symptom tokens
+ */
+const normalizeSymptomTokens = (rawSymptoms, vocabulary) => {
+  if (!Array.isArray(rawSymptoms)) return [];
+  const normalized = [];
+
+  for (const item of rawSymptoms) {
+    const cleanItem = String(item).toLowerCase().trim().replace(/\s+/g, '_');
+    
+    // 1. Direct vocabulary match
+    if (vocabulary.includes(cleanItem)) {
+      normalized.push(cleanItem);
+    } 
+    // 2. Alias match
+    else if (SYMPTOM_ALIASES[cleanItem] && vocabulary.includes(SYMPTOM_ALIASES[cleanItem])) {
+      normalized.push(SYMPTOM_ALIASES[cleanItem]);
+    }
+    // 3. Partial substring match in vocabulary
+    else {
+      const match = vocabulary.find(v => v.includes(cleanItem) || cleanItem.includes(v));
+      if (match) {
+        normalized.push(match);
+      }
+    }
+  }
+
+  return [...new Set(normalized)];
+};
+
 module.exports = {
-  extractSymptoms
+  getVocabulary,
+  extractSymptoms,
+  normalizeSymptomTokens
 };

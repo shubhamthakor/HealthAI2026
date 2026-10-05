@@ -14,8 +14,8 @@ const generateCompletion = async (messages, systemInstruction = '', jsonMode = f
 
   if (geminiKey && geminiKey !== 'your_gemini_api_key_here') {
     // Call Gemini API
-    // Model: gemini-2.5-flash
-    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${geminiKey}`;
+    // Model: gemini-3.8-flash
+    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.8-flash:generateContent?key=${geminiKey}`;
     
     // Map OpenAI/Groq standard role message format to Gemini's format:
     // role: "user" | "model"
@@ -63,7 +63,11 @@ const generateCompletion = async (messages, systemInstruction = '', jsonMode = f
       }
       return text;
     } catch (error) {
-      console.error('Gemini API call failed, trying Groq fallback if configured:', error.message);
+      if (error.response?.status === 429) {
+        console.log('⚠️ [AI Engine Notice] Gemini API daily quota limit exceeded (429 Rate Limit). Responding via Groq LLM (qwen/qwen3.8-27b)...');
+      } else {
+        console.log(`⚠️ [AI Engine Notice] Gemini API temporary issue (${error.response ? error.response.status : error.message}). Responding via Groq LLM (qwen/qwen3.8-27b)...`);
+      }
       if (!groqKey) {
         throw error;
       }
@@ -96,7 +100,7 @@ const generateCompletion = async (messages, systemInstruction = '', jsonMode = f
     const response = await axios.post(
       'https://api.groq.com/openai/v1/chat/completions',
       {
-        model: 'llama-3.1-8b-instant',
+        model: 'qwen/qwen3.8-27b',
         messages: groqMessages,
         temperature: 0.1,
         max_tokens: 1024,

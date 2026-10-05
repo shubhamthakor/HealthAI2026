@@ -150,6 +150,8 @@ const refresh = async (req, res, next) => {
 
     // Verify token matches the database copy (prevent token reuse after compromised)
     if (!account || account.refreshToken !== refreshToken) {
+      res.clearCookie('accessToken');
+      res.clearCookie('refreshToken');
       return next(new AppError('Refresh token is invalid or has been revoked.', 401, 'UNAUTHORIZED'));
     }
 
@@ -170,6 +172,8 @@ const refresh = async (req, res, next) => {
       message: 'Access token refreshed.'
     });
   } catch (err) {
+    res.clearCookie('accessToken');
+    res.clearCookie('refreshToken');
     return next(new AppError('Invalid or expired refresh token.', 401, 'UNAUTHORIZED'));
   }
 };

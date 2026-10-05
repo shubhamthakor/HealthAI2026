@@ -4,7 +4,7 @@ from typing import List
 class PredictionRequest(BaseModel):
     symptoms: List[str] = Field(
         ..., 
-        example=["fever", "headache", "vomiting"],
+        json_schema_extra={"example": ["fever", "headache", "vomiting"]},
         description="List of clinical symptom keys extracted from user description"
     )
 
