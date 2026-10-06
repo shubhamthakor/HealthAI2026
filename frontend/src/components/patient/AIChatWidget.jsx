@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import ReactDOM from 'react-dom';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../context/AuthContext';
 import api from '../../api/axios';
@@ -236,7 +237,7 @@ const AIChatWidget = () => {
     );
   };
 
-  return (
+  return ReactDOM.createPortal(
     <div className="ai-chat-widget-container">
       {/* Welcome Bubble */}
       {showWelcomeBubble && !isOpen && (
@@ -380,7 +381,8 @@ const AIChatWidget = () => {
           </form>
         </div>
       )}
-    </div>
+    </div>,
+    document.body
   );
 };
 

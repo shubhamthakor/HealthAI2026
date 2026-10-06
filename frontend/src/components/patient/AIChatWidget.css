@@ -4,8 +4,11 @@
   position: fixed;
   bottom: 24px;
   right: 24px;
-  z-index: 1000;
+  z-index: 999999;
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
 }
 
 /* Toggle Trigger Button */
@@ -23,6 +26,9 @@
   color: white;
   font-size: 28px;
   transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  position: relative;
+  z-index: 1000000;
+  flex-shrink: 0;
 }
 
 .ai-chat-trigger-btn:hover {
@@ -37,10 +43,12 @@
 /* Chat Window Frame */
 .ai-chat-window {
   position: fixed;
-  bottom: 84px;
-  right: 20px;
-  width: 340px;
-  height: 470px;
+  bottom: 96px;
+  right: 24px;
+  width: 360px;
+  max-width: calc(100vw - 32px);
+  height: 500px;
+  max-height: calc(100vh - 120px);
   border-radius: 16px;
   background: rgba(255, 255, 255, 0.96);
   backdrop-filter: blur(16px);
@@ -51,6 +59,7 @@
   overflow: hidden;
   animation: chatWindowOpen 0.35s cubic-bezier(0.16, 1, 0.3, 1);
   transform-origin: bottom right;
+  z-index: 999999;
 }
 
 @keyframes chatWindowOpen {
